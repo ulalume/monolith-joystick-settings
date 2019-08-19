@@ -60,10 +60,10 @@ function love.draw()
   local rs = {0, -math.pi, -math.pi / 2, -math.pi / 2 * 3}
 
   monolith:beginDraw()
-  if joystickCount < 4 then
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.print("joystick:"..joystickCount, 128 / 2 - 8 * 10 / 2, 128 /2 - 8 * 1 / 2)
-  end
+  --if joystickCount < 4 then
+  love.graphics.setColor(1, 0, 0)
+  love.graphics.print("joystick:"..joystickCount, 128 / 2 - 8 * 10 / 2, 128 / 2 - 8 * 1 / 2)
+  --end
 
   local nowSetting = true
   for i, setting in ipairs(settings) do
