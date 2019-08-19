@@ -12,18 +12,20 @@ local joystickSetting = {}
 
 -- Default 値が 1 か -1 の Axis を無視する
 local joysticks = {}
-function addJoystick(j, joystick)
+local cantUseJoystickAxis = {}
+function addJoystick(joystick)
   table2.removeItem(joysticks, joystick)
   table.insert(joysticks, joystick)
+
+  local guid = joystick:getGUID()
+  cantUseJoystickAxis[guid] = cantUseJoystickAxis[guid] or {}
+
   for k=1, joystick:getAxisCount() do
     if joystick:getAxis(k) == 1 or joystick:getAxis(k) == -1 then
-      local guid = joystick:getGUID()
-      cantUseJoystickAxis[guid] = cantUseJoystickAxis[guid] or {}
       table.insert(cantUseJoystickAxis[guid], k)
     end
   end
 end
-local cantUseJoystickAxis = {}
 for _,joystick in ipairs(love.joystick.getJoysticks()) do
   addJoystick(joystick)
 end
@@ -105,9 +107,13 @@ function joystickSetting:update(dt, cantUseJoysticks)
     self:watchInput(self.joystick, cantUseJoystickAxis[self.joystick:getGUID()])
   else
     for _, joystick in ipairs(love.joystick.getJoysticks()) do
-      if table2.indexOf(joysticks, joystick) == nil then addJoystick(joystick) end
+      if table2.indexOf(joysticks, joystick) == nil then
+        addJoystick(joystick)
+      end
       if table2.indexOf(cantUseJoysticks, joystick) == nil then
-        if self:watchInput(joystick, cantUseJoystickAxis[self.joystick:getGUID()]) then return end
+        --print(3, joystick:getGUID(), cantUseJoystickAxis[joystick:getGUID()])
+        if self:watchInput(joystick, cantUseJoystickAxis[joystick:getGUID()]) then return end
+        --if self:watchInput(joystick, cantUseJoystickAxis[self.joystick:getGUID()]) then return end
       end
     end
   end
